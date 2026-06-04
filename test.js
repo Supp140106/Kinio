@@ -1,0 +1,20 @@
+import { Firecrawl } from "firecrawl";
+
+const firecrawl = new Firecrawl({ apiKey: "fc-YOUR_API_KEY" });
+
+// Scrape a website
+const scrapeResponse = await firecrawl.scrape("https://firecrawl.dev", {
+  formats: ["markdown", "html"],
+});
+
+console.log(scrapeResponse);
+
+// Crawl a website
+const crawlResponse = await firecrawl.crawl("https://firecrawl.dev", {
+  limit: 100,
+  scrapeOptions: {
+    formats: ["markdown", "html"],
+  },
+});
+
+console.log(crawlResponse);
