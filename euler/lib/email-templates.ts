@@ -161,3 +161,36 @@ export function resetPasswordEmailHtml({
     `,
   })
 }
+
+export function signInEmailHtml({ url }: { url: string }) {
+  return baseHtml({
+    content: `
+      <tr>
+        <td style="padding: 24px 32px 0; text-align: center;">
+          <h1 style="margin: 0; font-size: 22px; font-weight: 600; color: #18181b; line-height: 1.3; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+            Sign in to Kineo
+          </h1>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 12px 32px 0; text-align: center;">
+          <p style="margin: 0; font-size: 15px; color: #52525b; line-height: 1.6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+            Click the button below to sign in to your account.
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td align="center" style="padding: 28px 32px 0;">
+          ${buttonHtml({ url, label: "Sign in" })}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 20px 32px 0; text-align: center;">
+          <p style="margin: 0; font-size: 13px; color: #a1a1aa; line-height: 1.5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+            If you didn't request this, you can safely ignore this email.
+          </p>
+        </td>
+      </tr>
+    `,
+  })
+}

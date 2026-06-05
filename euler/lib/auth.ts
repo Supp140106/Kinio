@@ -1,15 +1,11 @@
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
-import { eq } from "drizzle-orm"
 import { db } from "@/db"
-import { user } from "@/db/schema"
 import { stripe } from "@better-auth/stripe"
+import { magicLink } from "better-auth/plugins/magic-link"
 import Stripe from "stripe"
 import { sendEmail } from "./email"
-import {
-  verificationEmailHtml,
-  resetPasswordEmailHtml,
-} from "./email-templates"
+import { signInEmailHtml } from "./email-templates"
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY
 
@@ -17,40 +13,6 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
-  emailAndPassword: {
-    enabled: true,
-    sendResetPassword: async ({ user: cbUser, url }) => {
-      const [existing] = await db
-        .select({ id: user.id })
-        .from(user)
-        .where(eq(user.id, cbUser.id))
-        .limit(1)
-      if (!existing) return
-
-      void sendEmail({
-        to: cbUser.email,
-        subject: "Reset your password",
-        html: resetPasswordEmailHtml({ url, userName: cbUser.name }),
-      })
-    },
-  },
-  emailVerification: {
-    sendOnSignUp: true,
-    sendVerificationEmail: async ({ user: cbUser, url }) => {
-      const [existing] = await db
-        .select({ id: user.id })
-        .from(user)
-        .where(eq(user.id, cbUser.id))
-        .limit(1)
-      if (!existing) return
-
-      void sendEmail({
-        to: cbUser.email,
-        subject: "Verify your email",
-        html: verificationEmailHtml({ url, userName: cbUser.name }),
-      })
-    },
-  },
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -58,6 +20,15 @@ export const auth = betterAuth({
     },
   },
   plugins: [
+    magicLink({
+      sendMagicLink: async ({ email, url }) => {
+        await sendEmail({
+          to: email,
+          subject: "Sign in to Kineo",
+          html: signInEmailHtml({ url }),
+        })
+      },
+    }),
     ...(stripeSecretKey
       ? [
           stripe({

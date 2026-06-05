@@ -12,6 +12,7 @@ import { PreviewPanel } from "@/components/workspace/preview-panel"
 import { useGenerate } from "@/hooks/use-generate"
 import { useTheme } from "next-themes"
 import { useWorkspaceStore } from "@/stores/workspace-store"
+import { WakeBackend } from "@/components/wake-backend"
 
 // ── Props ──────────────────────────────────────────────────────────────────────
 
@@ -161,6 +162,7 @@ export function ProjectWorkspace({
 
   return (
     <div className="flex h-svh flex-col bg-background text-foreground">
+      <WakeBackend />
       {/* ── Header ── */}
       <header className="flex shrink-0 items-center gap-3 border-b px-6 py-3.5">
         <Link

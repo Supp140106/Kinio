@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { motion, AnimatePresence } from "framer-motion"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { motion } from "framer-motion"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -71,83 +70,8 @@ function FloatingShape({
   )
 }
 
-function SignInForm() {
-  const router = useRouter()
+function MagicLinkForm() {
   const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
-
-  return (
-    <form
-      onSubmit={async (e) => {
-        e.preventDefault()
-        setLoading(true)
-        setError("")
-        const { error: err } = await authClient.signIn.email({
-          email,
-          password,
-          callbackURL: "/dashboard",
-        })
-        setLoading(false)
-        if (err) {
-          setError(err.message || "Invalid credentials")
-        } else {
-          router.push("/dashboard")
-        }
-      }}
-      className="space-y-4"
-    >
-      <div className="space-y-2">
-        <Label htmlFor="signin-email">Email</Label>
-        <Input
-          id="signin-email"
-          type="email"
-          placeholder="name@example.com"
-          required
-          autoComplete="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label htmlFor="signin-password">Password</Label>
-          <a
-            href="/reset-password"
-            className="text-xs text-muted-foreground underline-offset-2 hover:underline hover:text-foreground"
-          >
-            Forgot password?
-          </a>
-        </div>
-        <Input
-          id="signin-password"
-          type="password"
-          placeholder="Enter your password"
-          required
-          autoComplete="current-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      {error && <p className="text-sm text-destructive">{error}</p>}
-      <Button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-gradient-to-r from-violet-500 to-indigo-600 text-white hover:from-violet-600 hover:to-indigo-700"
-        size="lg"
-      >
-        {loading ? <Loader2 className="size-4 animate-spin" /> : "Sign in"}
-      </Button>
-    </form>
-  )
-}
-
-function SignUpForm() {
-  const router = useRouter()
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [submitted, setSubmitted] = useState(false)
@@ -164,7 +88,7 @@ function SignUpForm() {
         </div>
         <h3 className="text-lg font-semibold">Check your email</h3>
         <p className="mt-1 text-sm text-muted-foreground">
-          We sent a verification link to your email address.
+          We sent a magic sign-in link to your email.
         </p>
         <Button
           variant="outline"
@@ -183,10 +107,9 @@ function SignUpForm() {
         e.preventDefault()
         setLoading(true)
         setError("")
-        const { error: err } = await authClient.signUp.email({
-          name,
+        const { error: err } = await authClient.signIn.magicLink({
           email,
-          password,
+          callbackURL: "/dashboard",
         })
         setLoading(false)
         if (err) {
@@ -198,39 +121,15 @@ function SignUpForm() {
       className="space-y-4"
     >
       <div className="space-y-2">
-        <Label htmlFor="signup-name">Full name</Label>
+        <Label htmlFor="magic-link-email">Email</Label>
         <Input
-          id="signup-name"
-          type="text"
-          placeholder="Jane Smith"
-          required
-          autoComplete="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="signup-email">Email</Label>
-        <Input
-          id="signup-email"
+          id="magic-link-email"
           type="email"
           placeholder="name@example.com"
           required
           autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="signup-password">Password</Label>
-        <Input
-          id="signup-password"
-          type="password"
-          placeholder="Create a password"
-          required
-          autoComplete="new-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
         />
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
@@ -240,7 +139,7 @@ function SignUpForm() {
         className="w-full bg-gradient-to-r from-violet-500 to-indigo-600 text-white hover:from-violet-600 hover:to-indigo-700"
         size="lg"
       >
-        {loading ? <Loader2 className="size-4 animate-spin" /> : "Create account"}
+        {loading ? <Loader2 className="size-4 animate-spin" /> : "Send magic link"}
       </Button>
     </form>
   )
@@ -248,7 +147,6 @@ function SignUpForm() {
 
 export function AuthPage() {
   const router = useRouter()
-  const [tab, setTab] = useState("sign-in")
   const { data: session, isPending } = authClient.useSession()
 
   useEffect(() => {
@@ -274,54 +172,18 @@ export function AuthPage() {
                   Kineo
                 </span>
               </div>
-              <Tabs value={tab} onValueChange={setTab}>
-                <TabsList className="w-full">
-                  <TabsTrigger value="sign-in" className="flex-1">
-                    Sign in
-                  </TabsTrigger>
-                  <TabsTrigger value="sign-up" className="flex-1">
-                    Sign up
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
             </CardHeader>
 
             <CardContent>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={tab}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.2, ease: "easeInOut" }}
-                >
-                  {tab === "sign-in" ? (
-                    <>
-                      <div className="mb-6 mt-2">
-                        <CardTitle className="text-base">
-                          Welcome back
-                        </CardTitle>
-                        <CardDescription>
-                          Sign in to your Kineo account.
-                        </CardDescription>
-                      </div>
-                      <SignInForm />
-                    </>
-                  ) : (
-                    <>
-                      <div className="mb-6 mt-2">
-                        <CardTitle className="text-base">
-                          Create your account
-                        </CardTitle>
-                        <CardDescription>
-                          Start creating animations in minutes.
-                        </CardDescription>
-                      </div>
-                      <SignUpForm />
-                    </>
-                  )}
-                </motion.div>
-              </AnimatePresence>
+              <div className="mb-6 mt-2">
+                <CardTitle className="text-base">
+                  Sign in to Kineo
+                </CardTitle>
+                <CardDescription>
+                  Enter your email to receive a magic sign-in link.
+                </CardDescription>
+              </div>
+              <MagicLinkForm />
 
               <div className="relative my-6">
                 <Separator />

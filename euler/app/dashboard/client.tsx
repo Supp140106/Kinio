@@ -10,6 +10,7 @@ import {
   Loader2,
   Trash2,
 } from "lucide-react"
+import { WakeBackend } from "@/components/wake-backend"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -93,6 +94,7 @@ export function DashboardClient({
 
   return (
     <div className="flex flex-col gap-8 px-6 py-8">
+      <WakeBackend />
       {/* Header */}
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">
