@@ -1,9 +1,15 @@
+import type { Metadata } from "next"
 import { headers } from "next/headers"
 import { and, desc, eq, inArray } from "drizzle-orm"
 import { auth } from "@/lib/auth"
 import { db } from "@/db"
 import { subscription } from "@/db/schema"
 import { Pricing } from "@/components/landing/pricing"
+
+export const metadata: Metadata = {
+  title: "Pricing",
+  robots: { index: false, follow: false },
+}
 
 export default async function PricingPage() {
   const session = await auth.api.getSession({ headers: await headers() })

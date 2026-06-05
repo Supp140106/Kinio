@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { headers } from "next/headers"
 import { and, eq } from "drizzle-orm"
@@ -5,6 +6,11 @@ import { auth } from "@/lib/auth"
 import { db } from "@/db"
 import { project, userCredits } from "@/db/schema"
 import { ProjectWorkspace } from "./project-workspace"
+
+export const metadata: Metadata = {
+  title: "Project Workspace",
+  robots: { index: false, follow: false },
+}
 
 export default async function ProjectPage({
   params,

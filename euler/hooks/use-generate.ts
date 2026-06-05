@@ -30,7 +30,11 @@ export function useGenerate(projectId: string) {
   const abortRef = useRef<AbortController | null>(null)
 
   const generate = useCallback(
-    async (prompt: string, previousCode?: string, previousPlan?: string) => {
+    async (
+      prompt: string,
+      previousCode?: string,
+      previousPlan?: string,
+    ) => {
       // Cancel any in-flight stream
       abortRef.current?.abort()
       const controller = new AbortController()

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, GripVertical, Zap } from "lucide-react"
+import { ArrowLeft, GripVertical, Loader2, Moon, Sun, Zap } from "lucide-react"
 import { AnimatePresence, motion } from "framer-motion"
 import Markdown from "react-markdown"
 
@@ -10,6 +10,7 @@ import { AgentPlan } from "@/components/ui/agent-plan"
 import { PromptInputBox } from "@/components/ui/ai-prompt-box"
 import { PreviewPanel } from "@/components/workspace/preview-panel"
 import { useGenerate } from "@/hooks/use-generate"
+import { useTheme } from "next-themes"
 import { useWorkspaceStore } from "@/stores/workspace-store"
 
 // ── Props ──────────────────────────────────────────────────────────────────────
@@ -42,6 +43,9 @@ export function ProjectWorkspace({
   const lastPlan = useWorkspaceStore((s) => s.lastPlan)
   const lastVideoUrl = useWorkspaceStore((s) => s.lastVideoUrl)
   const isHistoryLoading = useWorkspaceStore((s) => s.isHistoryLoading)
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  const { theme, setTheme } = useTheme()
   const fetchHistory = useWorkspaceStore((s) => s.fetchHistory)
   const addUserMessage = useWorkspaceStore((s) => s.addUserMessage)
   const addAssistantMessage = useWorkspaceStore((s) => s.addAssistantMessage)
@@ -156,7 +160,7 @@ export function ProjectWorkspace({
   // ── Render ────────────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex h-svh flex-col bg-white text-foreground">
+    <div className="flex h-svh flex-col bg-background text-foreground">
       {/* ── Header ── */}
       <header className="flex shrink-0 items-center gap-3 border-b px-6 py-3.5">
         <Link
@@ -177,6 +181,13 @@ export function ProjectWorkspace({
         )}
 
         <div className="ml-auto flex items-center gap-3">
+          <button
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground"
+            title="Toggle theme"
+          >
+            {!mounted ? <div className="size-3.5" /> : theme === "dark" ? <Sun className="size-3.5" /> : <Moon className="size-3.5" />}
+          </button>
           <div className="flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-1 text-xs font-medium text-amber-600 dark:text-amber-400">
             <Zap className="size-3" />
             {credits}
@@ -197,7 +208,14 @@ export function ProjectWorkspace({
           {/* Messages */}
           <div className="scrollbar-hide flex-1 overflow-y-auto px-5 py-6">
             <div className="mx-auto flex max-w-md flex-col gap-4">
-              {isEmpty ? (
+              {isHistoryLoading && messages.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-24 text-center">
+                  <Loader2 className="size-8 animate-spin text-muted-foreground/50" />
+                  <p className="mt-4 text-sm text-muted-foreground">
+                    Loading project history...
+                  </p>
+                </div>
+              ) : isEmpty ? (
                 <div className="flex flex-col items-center justify-center py-24 text-center">
                   <h2 className="text-lg font-semibold tracking-tight">
                     {projectName}
@@ -293,7 +311,7 @@ export function ProjectWorkspace({
           </div>
 
           {/* Prompt input */}
-          <div className="shrink-0 border-t bg-white px-5 py-4">
+          <div className="shrink-0 border-t bg-background px-5 py-4">
             {insufficientCredits && (
               <div className="mb-3 rounded-xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
                 You don&apos;t have enough credits. Your plan provides{" "}

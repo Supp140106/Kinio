@@ -1,5 +1,3 @@
-"use client"
-
 import { Button } from "@/components/ui/button"
 import { ScrollReveal } from "@/components/landing/scroll-reveal"
 import { ArrowRight, Play } from "lucide-react"

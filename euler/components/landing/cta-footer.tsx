@@ -1,12 +1,10 @@
-"use client"
-
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ScrollReveal } from "./scroll-reveal"
 import { ArrowRight } from "lucide-react"
 
 const FOOTER_LINKS = {
-  Product: ["Features", "Gallery", "Integrations", "API"],
+  Product: ["Features", "Integrations", "API"],
   Resources: ["Docs", "Tutorials", "Community", "Blog"],
   Company: ["About", "Careers", "Press", "Contact"],
 }

@@ -1,5 +1,3 @@
-"use client"
-
 import { ScrollReveal } from "@/components/landing/scroll-reveal"
 
 const LOGOS = [

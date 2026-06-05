@@ -1,15 +1,18 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import Image from "next/image"
+import { useTheme } from "next-themes"
 import {
   LayoutDashboard,
   CreditCard,
   Zap,
   LogOut,
   Menu,
+  Moon,
+  Sun,
   X,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -49,6 +52,9 @@ export function DashboardSidebar({
   const [mobileOpen, setMobileOpen] = useState(false)
   const [signOutOpen, setSignOutOpen] = useState(false)
   const [signingOut, setSigningOut] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  const { theme, setTheme } = useTheme()
 
   async function handleSignOut() {
     setSigningOut(true)
@@ -121,6 +127,26 @@ export function DashboardSidebar({
               {credits} credit{credits !== 1 ? "s" : ""}
             </span>
           </div>
+
+          <button
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="mb-3 flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            {!mounted ? (
+              <div className="size-4" />
+            ) : theme === "dark" ? (
+              <Sun className="size-4" />
+            ) : (
+              <Moon className="size-4" />
+            )}
+            {!mounted ? (
+              <span className="h-4 w-20" />
+            ) : theme === "dark" ? (
+              "Light mode"
+            ) : (
+              "Dark mode"
+            )}
+          </button>
 
           <div className="flex items-center gap-3">
             {user.image ? (

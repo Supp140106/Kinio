@@ -107,15 +107,15 @@ export function PreviewPanel({
 
       <TabsContent
         value="code"
-        className="relative min-h-0 flex-1 overflow-hidden rounded-b-none bg-[#0d1117]"
+        className="relative min-h-0 flex-1 overflow-hidden rounded-b-none bg-muted"
       >
-        {/* Copy button floats over the dark code surface */}
+        {/* Copy button floats over the code surface */}
         <button
           onClick={copyCode}
-          className="absolute top-4 right-4 z-10 flex items-center gap-1.5 rounded-md border border-white/10 bg-white/10 px-2.5 py-1.5 text-xs text-white/60 backdrop-blur transition-colors hover:bg-white/20 hover:text-white"
+          className="absolute top-4 right-4 z-10 flex items-center gap-1.5 rounded-md border border-border bg-background/80 px-2.5 py-1.5 text-xs text-muted-foreground backdrop-blur transition-colors hover:bg-background hover:text-foreground"
         >
           {copied ? (
-            <Check className="size-3 text-green-400" />
+            <Check className="size-3 text-green-500" />
           ) : (
             <Copy className="size-3" />
           )}

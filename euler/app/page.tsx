@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { headers } from "next/headers"
 import { and, inArray, eq, desc } from "drizzle-orm"
 import { Navbar } from "@/components/landing/navbar"
@@ -14,6 +15,56 @@ import { CTAFooter } from "@/components/landing/cta-footer"
 import { auth } from "@/lib/auth"
 import { db } from "@/db"
 import { subscription, userCredits } from "@/db/schema"
+import { JsonLdScript } from "@/components/json-ld-script"
+import {
+  webApplicationJsonLd,
+  organizationJsonLd,
+  faqPageJsonLd,
+} from "@/lib/json-ld"
+
+export const metadata: Metadata = {
+  title: "Kineo - AI Manim Video Generator | Text to Animation",
+  description:
+    "Generate stunning Manim animations from natural language. Kineo uses AI to turn your ideas into cinematic math, science, and educational videos. No animation experience needed.",
+  openGraph: {
+    title: "Kineo - AI Manim Video Generator",
+    description:
+      "Generate stunning Manim animations from natural language. Kineo uses AI to turn your ideas into cinematic math, science, and educational videos.",
+  },
+  twitter: {
+    title: "Kineo - AI Manim Video Generator",
+    description:
+      "Generate stunning Manim animations from natural language. Kineo uses AI to turn your ideas into cinematic math, science, and educational videos.",
+  },
+}
+
+const FAQ_QUESTIONS = [
+  {
+    question: "How does Kineo generate animations from text?",
+    answer:
+      "Kineo uses AI to analyze your prompt or script, identify key concepts, and generate corresponding Manim scenes. Each scene includes camera movements, object animations, annotations, and transitions. You can review and tweak every scene before rendering.",
+  },
+  {
+    question: "What kind of math and science visuals can I create?",
+    answer:
+      "Kineo supports everything from basic algebra and geometry to calculus, linear algebra, physics simulations, chemistry reactions, data structure visualizations, neural network diagrams, and more. If you can describe it, Kineo can animate it.",
+  },
+  {
+    question: "How long does rendering typically take?",
+    answer:
+      "A typical 3-minute 1080p video renders in 5-10 minutes on our cloud GPUs. 4K videos take longer depending on scene complexity. Pro and Studio plans get priority access to render queues.",
+  },
+  {
+    question: "Can I customize the AI-generated animations?",
+    answer:
+      "Absolutely. Every generated scene is fully editable. You can adjust camera angles, object positions, animation timing, colors, text, and more. The timeline editor gives you frame-level control.",
+  },
+  {
+    question: "What export formats and platforms are supported?",
+    answer:
+      "Export as MP4, GIF, or MOV at up to 4K resolution and 60fps. You can also publish directly to YouTube, TikTok, Twitter, and Instagram. Pro plans include API access for programmatic exports.",
+  },
+]
 
 export default async function Page() {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -48,8 +99,27 @@ export default async function Page() {
       )[0]?.credits ?? 20
     : null
 
+  const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://kineo.ai"
+
   return (
     <>
+      <JsonLdScript
+        data={[
+          webApplicationJsonLd({
+            url: siteUrl,
+            name: "Kineo",
+            description:
+              "Generate stunning Manim animations from natural language using AI.",
+          }),
+          organizationJsonLd({
+            url: siteUrl,
+            name: "Kineo",
+            description:
+              "AI-powered Manim video generation platform for educational animations.",
+          }),
+          faqPageJsonLd(FAQ_QUESTIONS),
+        ]}
+      />
       <Navbar signedIn={Boolean(session)} credits={credits} />
       <main>
         <Hero />

@@ -1,9 +1,15 @@
+import type { Metadata } from "next"
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import { and, desc, eq, inArray } from "drizzle-orm"
 import { db } from "@/db"
 import { subscription, userCredits } from "@/db/schema"
 import { SidebarWrapper } from "./sidebar-wrapper"
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  robots: { index: false, follow: false },
+}
 
 export default async function DashboardLayout({
   children,

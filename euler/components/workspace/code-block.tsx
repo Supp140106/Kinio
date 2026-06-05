@@ -41,7 +41,7 @@ export function CodeBlock({ code }: CodeBlockProps) {
   if (!html) {
     // Plain fallback while shiki loads
     return (
-      <pre className="h-full overflow-auto bg-[#0d1117] p-6 pt-14 text-xs leading-relaxed text-[#e6edf3]">
+      <pre className="h-full overflow-auto bg-muted p-6 pt-14 text-xs leading-relaxed text-foreground">
         <code className="font-mono">{code}</code>
       </pre>
     )

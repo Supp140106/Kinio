@@ -1,9 +1,15 @@
+import type { Metadata } from "next"
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import { db } from "@/db"
 import { project } from "@/db/schema"
 import { desc, eq } from "drizzle-orm"
 import { DashboardClient } from "./client"
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  robots: { index: false, follow: false },
+}
 
 function isMissingProjectTableError(error: unknown) {
   return (
